@@ -55,26 +55,6 @@
         }
         return element;
     };
-    // $.ajax({
-    //   url:"data/get.php",
-    //   type:"get",
-    //   success:function (data) {
-    //     var newsList = data.result.data;
-    //     var page = document.createDocumentFragment();
-    //     for(var i = 0,item;item = newsList[i++];){
-    //       var news = element(
-    //         "a",
-    //         {"class":"col-sm-6 col-md-4 item","href":item.url},
-    //         "<img src='"+item.thumbnail_pic_s+"'/>"+ "<p>"+item.title+"</p>"+ "<p>"+item.date+" &nbsp;&nbsp;&nbsp;来源："+item.author_name+"</p>"
-    //       );
-    //       $(news).appendTo($(page));
-    //     };
-    //     $(".container").html($(page));
-    //   },
-    //   error:function (data) {
-    //     console.log(data.responseText);
-    //   }
-    // });
 </script>
 </body>
 </html>
