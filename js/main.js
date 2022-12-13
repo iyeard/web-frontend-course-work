@@ -1,8 +1,3 @@
-// $(".nav li").on("click",function () {
-//    $(this).addClass("selected").siblings().removeClass("selected");
-// });
-
-//判断是否为手机端
 function isMobile(){
   if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
     return true
@@ -14,7 +9,6 @@ var app = {
         this.pageShow();
         this.bigImg();
         this.swiperBtn();
-        //轮播banner
         $('.carousel').carousel();
     },
     //创建元素函数
@@ -72,19 +66,6 @@ var app = {
             nextButton:'.swiper-button-next',
         });
     },
-    pageShow: function () {
-        $.ajax({
-            url: "data/main.php",
-            type: "get",
-            success:function (data) {
-                this.bannerFun(data);
-                // this.newsFun(data);
-                this.newsAutoFun();
-                this.imgShowFun(data);
-                this.specialtyFun(data);
-            }.bind(this)
-        });
-    },
     // banner
     bannerFun: function (data) {
         var bannerList = data.bannerList;
@@ -129,49 +110,6 @@ var app = {
         }
         $('<a class="btn-check-more" href="news.html">新闻头条 &gt;</a>').appendTo($(fragmentNews))
         $(fragmentNews).appendTo($(".news-bulletin-content"));
-    },
-    newsAutoFun:function () {
-      $.ajax({
-        type:'GET',
-        url:'data/get-news-auto.php',
-        success:function(data){
-          var type  = JSON.parse(data).type;
-          var container = "";
-          var arr = [];
-          if(isMobile()){
-            container = JSON.parse(data).data.match(/<ul class="news_list news_list_c" style="padding-top:10px;">([\s\S]*?)<\/ul>/)[1];
-            arr = container.match(/<li>([\s\S]*?)<\/li>/g);
-          }else{
-            container = JSON.parse(data).data.match(/<div class="lbyzc">([\s\S]*?)<div class="col-auto/)[1];
-            arr = container.match(/<ul>([\s\S]*)<\/ul>/)[1].match(/<li>([\s\S]*?)<\/li>/g);
-          }
-
-          var fragmentNews = document.createDocumentFragment();
-          for(let i = 0;i<5;i++){
-            let item = {};
-            item.ntime = arr[i].match(/<span>([\s\S]*)<\/span>/)[1];
-            item.title = arr[i].match(/<a([\s\S]*)<\/a>/)[1].split(">")[1];
-            item.href = arr[i].match(/<a href="([\s\S]*?)"/)[1];
-
-            var divNews = this.element(
-              "div",
-              {"class":"news-bulletin-item"},
-              "<a href="+item.href+" class=\"clearfix\" target=\"_blank\">\n" +
-              "  <p class=\"item-title fl\">\n"+item.title+"</p>\n" +
-              "  <p class=\"item-time fr\">\n"+item.ntime+ "</p>\n" +
-              "</a>"
-            );
-
-            $(divNews).appendTo($(fragmentNews));
-          }
-
-          $('<a class="btn-check-more" href="news.html">新闻头条 &gt;</a>').appendTo($(fragmentNews))
-          $(fragmentNews).appendTo($(".news-bulletin-content"));
-        }.bind(this),
-        error:function (data) {
-          console.log(data)
-        }
-      })
     },
     // imgshow
     imgShowFun: function (data) {
@@ -303,53 +241,6 @@ var app = {
             document.body.scrollTop = 0;
             document.documentElement.scrollTop =0;
         }.bind(this));
-    },
-    detailShow: function (_id) {
-        $.ajax({
-            url:"data/detail.php?name="+_id,
-            type:"get",
-            success:function (data) {
-                var imgFile = "specialty";
-                if(data[0].type==="0"){
-                    imgFile = "specialty";
-                    $($(".navbar-nav li")[1]).addClass("selected")
-                        .siblings("li").removeClass("selected");
-                }else if(data[0].type==="1"){
-                    imgFile = "scenery";
-                    $($(".navbar-nav li")[2]).addClass("selected")
-                        .siblings("li").removeClass("selected");
-                }
-                // title
-                $(".detail-content .detail-title").html(data[0].title);
-                document.getElementsByTagName('title')[0].innerHTML= data[0].title;
-                // banner
-                var fragmentBanner = document.createDocumentFragment();
-                for(var i = 0;i<data[0].imgCount;i++){
-                    var divBanner = this.element(
-                        "div",
-                        {"class":"swiper-slide"},
-                        "<a href=\"javascript:void(0);\">\n" +
-                        "  <img class=\"small-img\" src=\"images/"+imgFile+"/"+data[0].name+"/"+data[0].name+"-0"+(i+1)+".jpg\" alt=\"\">\n" +
-                        "</a>"
-                    );
-
-                    $(divBanner).appendTo($(fragmentBanner));
-                }
-                $(".detail-banner .swiper-wrapper").html($(fragmentBanner));
-
-                // 描述
-                var fragmentDes = document.createDocumentFragment();
-                var des = data[0].des.split("|");
-                for(var j = 0;j<des.length;j++){
-                    var pDes = this.element("p",{"class":"describe-section"},des[j]);
-
-                    $(pDes).appendTo($(fragmentDes));
-                }
-                $(".detail-describe").html($(fragmentDes));
-
-                this.swiper3();
-            }.bind(this)
-        });
     },
     // 大图
     bigImg: function () {
